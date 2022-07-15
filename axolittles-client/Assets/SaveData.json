@@ -1,0 +1,16 @@
+{
+    "axoqUserConfig": {
+        "axoItems": [
+            {
+                "id": "57db66c8-eaf1-11ec-8fea-0242ac120002",
+                "type": "couch",
+                "color": "black"
+            },
+            {
+                "id": "54835364-eaf1-11ec-8fea-0242ac120002",
+                "type": "carpet",
+                "color": "white"
+            }
+        ]
+    }
+}

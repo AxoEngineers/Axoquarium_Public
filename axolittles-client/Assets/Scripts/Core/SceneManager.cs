@@ -13,6 +13,7 @@ using Random = UnityEngine.Random;
 
 public class SceneManager : Mingleton<SceneManager>
 {
+   
     public static string Nickname
     {
         get => PlayerPrefs.GetString("SappyNickname", "Seal");
@@ -40,7 +41,9 @@ public class SceneManager : Mingleton<SceneManager>
     private bool loginFailed = false;
     private bool pleaseWait = true;
     private bool errorShown = false;
+    private bool EthAddressLogin = false;
     private AvatarIdentity identity = AvatarIdentity.Null;
+    private AquariumManager aquariumManager;
     
     public string Status
     {
@@ -92,6 +95,17 @@ public class SceneManager : Mingleton<SceneManager>
         SetLoadingScreen(false);
         menuCamera.gameObject.SetActive(false);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Main", LoadSceneMode.Additive);
+        
+        yield return new WaitForSeconds(0.3f);
+        if (aquariumManager == null)
+            aquariumManager = AquariumManager.Instance;
+        if(!EthAddressLogin)
+        {
+          
+            aquariumManager.gameObject.GetComponent<EditMode>().EditButton.SetActive(true);
+        }
+        StartCoroutine(GetApiAxoquariumConfig.Instance.SendRequest());
+
     }
 
     public void ViewRoomByEthAddress()
@@ -100,14 +114,18 @@ public class SceneManager : Mingleton<SceneManager>
             return;
         ConnectPanel.SetActive(false);
         SetLoadingScreen(true);
+        EthAddressLogin = true;
         StartCoroutine(WaitForLogin(_EthAddressInputField.text));
+        
     }
     
     public void MetamaskAuthenticate()
     {
         ConnectPanel.SetActive(false);
         SetLoadingScreen(true);
+        EthAddressLogin = false;
         StartCoroutine(WaitForLogin(null));
+       
     }
 
     IEnumerator WaitForLogin(string ethAddress)
@@ -119,6 +137,7 @@ public class SceneManager : Mingleton<SceneManager>
         _WalletConnectText.text = "";
 
         var auth = MetamaskAuth.Instance;
+        
         if (ethAddress == null) // no eth address specified
         {
             Status = "Asking Metamask to authenticate you";
@@ -156,10 +175,12 @@ public class SceneManager : Mingleton<SceneManager>
             }
             
             // get all axolittles
-            UnityWebRequest www = UnityWebRequest.Get($"{Configuration.GetWeb3URL()}all/{ethAddress}");
+            //UnityWebRequest www = UnityWebRequest.Get($"{Configuration.GetWeb3URL()}all/{ethAddress}"); // use this on PROD
+            UnityWebRequest www = UnityWebRequest.Get($"https://axoquarium.herokuapp.com/all/{ethAddress}");
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success) {
                 auth.CompleteMetamaskAuth($"{ethAddress}||{www.downloadHandler.text}");
+                
             }
         }
         
@@ -205,14 +226,25 @@ public class SceneManager : Mingleton<SceneManager>
         //"Download Complete.. Launching";
         yield return new WaitForSeconds(0.5f);
 
-        StartCoroutine(GoToMainMenu());
+         StartCoroutine(GoToMainMenu());
+       
+       
     }
 
     public void ExitGame(IEnumerator beginAction=null)
     {
-        menuCamera.gameObject.SetActive(true);
-        SetLoadingScreen(true);
-        StartCoroutine(UnloadOperation(beginAction));
+        if (GamemodeSwitcher.GetChangesStatus())
+        {
+            aquariumManager.OpenModalWindow(true);
+        }
+        else
+        {
+            aquariumManager.EnablePlayMode();
+            menuCamera.gameObject.SetActive(true);
+            SetLoadingScreen(true);
+            StartCoroutine(UnloadOperation(beginAction));
+            
+        }
     }
 
     IEnumerator UnloadOperation(IEnumerator beginAction=null)

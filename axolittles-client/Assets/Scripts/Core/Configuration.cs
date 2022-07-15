@@ -16,6 +16,7 @@ public static class Configuration
 
     public static BuildEnvironment GetEnv()
     {
+        return BuildEnvironment.Production;
         #if UNITY_EDITOR
         return BuildEnvironment.Local;
         #else
@@ -38,13 +39,17 @@ public static class Configuration
             }
         }
         #endif
+        
     }
     
     public static string GetWeb3URL()
     {
+       
         switch (GetEnv())
         {
-            case BuildEnvironment.Local: return "http://localhost:3000/";
+            //case BuildEnvironment.Local: return "http://localhost:3000/";
+           // case BuildEnvironment.Production: return "https://axoquarium.herokuapp.com/";
+            case BuildEnvironment.Local: return "https://axoquarium.herokuapp.com/";
             case BuildEnvironment.Production: return "https://axoquarium.herokuapp.com/";
         }
 
@@ -55,7 +60,8 @@ public static class Configuration
     {
         switch (GetEnv())
         {
-            case BuildEnvironment.Local: return "LOCAL";
+           // case BuildEnvironment.Local: return "LOCAL";
+           case BuildEnvironment.Local: return "PROD";
             case BuildEnvironment.Development: return "DEV";
             case BuildEnvironment.Production: return "PROD";
         }
@@ -67,7 +73,8 @@ public static class Configuration
     {
         if (GetEnv() == BuildEnvironment.Local)
         {
-            return "ws://127.0.0.1:7667";
+            //return "ws://127.0.0.1:7667";
+            return "https://axoquarium.herokuapp.com/";
         }
 
         throw new Exception("This function should not be called on dev/prod.");

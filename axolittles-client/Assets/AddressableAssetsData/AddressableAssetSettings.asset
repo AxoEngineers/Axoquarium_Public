@@ -22,9 +22,9 @@ MonoBehaviour:
   m_maxConcurrentWebRequests: 500
   m_ContiguousBundles: 0
   m_RemoteCatalogBuildPath:
-    m_Id: efc6a7cbb08ab134daba2b979e75d665
+    m_Id: eff6024d71a0287479652a306fc50ca0
   m_RemoteCatalogLoadPath:
-    m_Id: efc6a7cbb08ab134daba2b979e75d665
+    m_Id: 34efc19d98143a247bd4a4f51cc20178
   m_overridePlayerVersion: 
   m_GroupAssets:
   - {fileID: 11400000, guid: 3396ebb974132c3459cbf83a38722f2f, type: 2}
@@ -218,7 +218,7 @@ MonoBehaviour:
       - m_Id: eff6024d71a0287479652a306fc50ca0
         m_Value: ServerData/[BuildTarget]
       - m_Id: 34efc19d98143a247bd4a4f51cc20178
-        m_Value: http://localhost:3000/[BuildTarget]
+        m_Value: https://axoquarium.devbazu.com/StreamingAssets/aa/[BuildTarget]
     m_ProfileEntryNames:
     - m_Id: efc6a7cbb08ab134daba2b979e75d665
       m_Name: BuildTarget
